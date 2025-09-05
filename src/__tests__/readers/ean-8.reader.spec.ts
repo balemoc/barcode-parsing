@@ -11,18 +11,18 @@ describe('Ean8Reader', () => {
 
     describe('validate', () => {
         test('should validate value length', () => {
-            /* tslint:disable */
-            expect(classUnderTest['validate'](']E411111111')).toBe(true);
-            expect(classUnderTest['validate'](']E411111111111111')).toBe(false);
-            expect(classUnderTest['validate'](']E411111')).toBe(false);
-            /* tslint:enable */
+           
+            expect(classUnderTest.validate(']E411111111')).toBe(true);
+            expect(classUnderTest.validate(']E411111111111111')).toBe(false);
+            expect(classUnderTest.validate(']E411111')).toBe(false);
+           
         });
 
         test('should validate character type', () => {
-            /* tslint:disable */
-            expect(classUnderTest['validate'](']E411111111')).toBe(true);
-            expect(classUnderTest['validate'](']E4aaaaaaaa')).toBe(false);
-            /* tslint:enable */
+           
+            expect(classUnderTest.validate(']E411111111')).toBe(true);
+            expect(classUnderTest.validate(']E4aaaaaaaa')).toBe(false);
+           
         });
     });
 });

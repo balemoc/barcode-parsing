@@ -11,20 +11,20 @@ describe('Itf8Reader', () => {
 
     describe('validate', () => {
         test('should validate value length', () => {
-            /* tslint:disable */
-            expect(classUnderTest['validate'](']I011111111')).toBe(true);
-            expect(classUnderTest['validate'](']I0111111111111111')).toBe(
+           
+            expect(classUnderTest.validate(']I011111111')).toBe(true);
+            expect(classUnderTest.validate(']I0111111111111111')).toBe(
                 false
             );
-            expect(classUnderTest['validate'](']I01111111')).toBe(false);
-            /* tslint:enable*/
+            expect(classUnderTest.validate(']I01111111')).toBe(false);
+           
         });
 
         test('should validate character type', () => {
-            /* tslint:disable */
-            expect(classUnderTest['validate'](']I011111111')).toBe(true);
-            expect(classUnderTest['validate'](']I0aaaaaaaaaaaaaa')).toBe(false);
-            /* tslint:enable*/
+           
+            expect(classUnderTest.validate(']I011111111')).toBe(true);
+            expect(classUnderTest.validate(']I0aaaaaaaaaaaaaa')).toBe(false);
+           
         });
     });
 });

@@ -5,7 +5,7 @@ export class BarcodeValue implements IBarcodeValue {
     private _values: any;
     private _errorMessage: string;
     private _success: boolean;
-    private _checkDigit: number = -1;
+    private _checkDigit = -1;
 
     constructor(private _symbology: string, private _rawValue: string) {
         this._success = true;

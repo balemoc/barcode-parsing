@@ -11,18 +11,18 @@ describe('Gtin14Reader', () => {
 
     describe('validate', () => {
         test('should validate value length', () => {
-            /* tslint:disable */
-            expect(classUnderTest['validate'](']E011111111111111')).toBe(true);
-            expect(classUnderTest['validate'](']E0111111111111111')).toBe(false);
-            expect(classUnderTest['validate'](']E01111111')).toBe(false);
-            /* tslint:enable */
+           
+            expect(classUnderTest.validate(']E011111111111111')).toBe(true);
+            expect(classUnderTest.validate(']E0111111111111111')).toBe(false);
+            expect(classUnderTest.validate(']E01111111')).toBe(false);
+           
         });
 
         test('should validate character type', () => {
-            /* tslint:disable */
-            expect(classUnderTest['validate'](']E011111111111111')).toBe(true);
-            expect(classUnderTest['validate'](']E0aaaaaaaaaaaaaa')).toBe(false);
-            /* tslint:enable */
+           
+            expect(classUnderTest.validate(']E011111111111111')).toBe(true);
+            expect(classUnderTest.validate(']E0aaaaaaaaaaaaaa')).toBe(false);
+           
         });
     });
 });

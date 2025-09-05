@@ -3,7 +3,7 @@ import { IBarcodeValue, IReaderConfiguration, BarcodeValue } from '../models';
 import { AimCodes, Symbologies } from '../enums';
 import { AimParser } from '../utils';
 
-const REG: RegExp = /^[A-Z0-9* \-$%.+\/]{1,43}$/;
+const REG = /^[A-Z0-9* \-$%.+\/]{1,43}$/;
 
 export class Code39Reader extends BaseReader {
     constructor(readerConfig?: IReaderConfiguration) {

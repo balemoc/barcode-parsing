@@ -97,17 +97,17 @@ describe('code39Reader', () => {
     describe('validate', () => {
         decodeValues.forEach(value => {
             test('should return true for valid value: ' + value, () => {
-                /* tslint:disable */
+               
                 expect(classUnderTest.validate(value)).toBe(true);
-                /* tslint:enable */
+               
             });
         });
 
         invalidValues.forEach(value => {
             test('should return false for invalid value: ' + value, () => {
-                /* tslint:disable */
+               
                 expect(classUnderTest.validate(value)).toBe(false);
-                /* tslint:enable */
+               
             });
         });
     });

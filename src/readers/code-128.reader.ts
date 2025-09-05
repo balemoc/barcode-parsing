@@ -10,7 +10,7 @@ import { CONTROLCHARS } from '../config';
 import { AimCodes, Symbologies } from '../enums';
 import { AimParser } from '../utils';
 
-const DELIMITER: string = ' ';
+const DELIMITER = ' ';
 
 export class Code128Reader extends BaseReader {
     constructor(readerConfig?: IReaderConfiguration) {

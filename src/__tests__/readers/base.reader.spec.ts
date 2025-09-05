@@ -2,7 +2,7 @@ import { BaseReader } from '../../readers/base.reader';
 import { IBarcodeValue, IReaderConfiguration } from '../../models';
 
 const REG: any = /[0-9]/;
-const SYMBOLOGY: string = 'MYSYMBOLOGY';
+const SYMBOLOGY = 'MYSYMBOLOGY';
 
 class TestReader extends BaseReader {
     constructor(readerConfig?: IReaderConfiguration) {
@@ -42,10 +42,10 @@ describe('baseReader', () => {
 
     describe('validate', () => {
         test('should validate using validationExpression', () => {
-            /* tslint:disable */
+           
             expect(classUnderTest.validate('1')).toBe(true);
             expect(classUnderTest.validate('a')).toBe(false);
-            /* tslint:enable */
+           
         });
     });
 });

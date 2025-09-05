@@ -11,7 +11,7 @@ import {
 
 import { AimParser } from '../utils';
 
-const DELIMITER: string = ' ';
+const DELIMITER = ' ';
 
 export class GS1Reader extends BaseReader {
     constructor(readerConfig?: IReaderConfiguration) {

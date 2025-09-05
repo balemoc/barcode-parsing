@@ -2,7 +2,7 @@ import { IReaderConfiguration } from '../models';
 import { BaseGtinReader } from './base-gtin.reader';
 import { Symbologies } from '../enums';
 
-const REG: RegExp = /^\]I0[0-9]{8,8}$/;
+const REG = /^\]I0[0-9]{8,8}$/;
 
 export class Itf8Reader extends BaseGtinReader {
     constructor(readerConfig?: IReaderConfiguration) {

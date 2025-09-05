@@ -35,7 +35,7 @@ describe('Code128Reader', () => {
 
     describe('validate', () => {
         test('should validate identifier is prefixed', () => {
-            /* tslint:disable */
+           
             expect(classUnderTest.validate('ABCDEFG')).toBe(false);
             expect(classUnderTest.validate('C1')).toBe(false);
             expect(classUnderTest.validate(']]C0')).toBe(false);
@@ -43,14 +43,14 @@ describe('Code128Reader', () => {
             expect(classUnderTest.validate(']C0111111111111111111111111')).toBe(
                 true
             );
-            /* tslint:enable */
+           
         });
 
         test('should validate value is at least 1 character', () => {
-            /* tslint:disable */
-            expect(classUnderTest['validate'](']C0')).toBe(false);
-            expect(classUnderTest['validate'](']C0A')).toBe(true);
-            /* tslint:enable */
+           
+            expect(classUnderTest.validate(']C0')).toBe(false);
+            expect(classUnderTest.validate(']C0A')).toBe(true);
+           
         });
     });
 
@@ -145,9 +145,9 @@ describe('Code128Reader', () => {
                 expect(actual.code).toBe('01');
                 expect(actual.description).toBe('Global Trade Item Number');
                 expect(actual.length).toBe(14);
-                /* tslint:disable */
+               
                 expect(actual.variableLength).toBe(false);
-                /* tslint:enable */
+               
             });
         });
 
@@ -160,9 +160,9 @@ describe('Code128Reader', () => {
                 expect(actual.code).toBe('241');
                 expect(actual.description).toBe('Customer Part Number');
                 expect(actual.length).toBe(30);
-                /* tslint:disable */
+               
                 expect(actual.variableLength).toBe(true);
-                /* tslint:enable */
+               
             });
         });
 
@@ -177,9 +177,9 @@ describe('Code128Reader', () => {
                     'Payment slip preference number',
                 );
                 expect(actual.length).toBe(25);
-                /* tslint:disable */
+               
                 expect(actual.variableLength).toBe(true);
-                /* tslint:enable */
+               
             });
         });
     });

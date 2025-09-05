@@ -3,7 +3,7 @@ import { Symbologies } from '../../enums';
 
 describe('BarcodeValue', () => {
     let classUnderTest: IBarcodeValue;
-    const symbology: string = 'MYSYMBOLOGY';
+    const symbology = 'MYSYMBOLOGY';
     const rawVal = '123456';
 
     beforeEach(() => {
