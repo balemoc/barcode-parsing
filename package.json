@@ -10,7 +10,7 @@
     ],
     "scripts": {
         "build": "tsc -d",
-        "prepublish": "npm run build",
+        "prepublishOnly": "npm run build",
         "test": "vitest run",
         "test:watch": "vitest",
         "coverage": "vitest --coverage",
@@ -33,10 +33,11 @@
         "@tsconfig/recommended": "1.0.10",
         "coveralls": "^3.0.1",
         "cz-conventional-changelog": "^2.1.0",
+        "eslint": "9.34.0",
         "prettier": "1.15.3",
         "semantic-release": "^17.2.3",
+        "tsdown": "0.14.2",
         "typescript": "5.9.2",
-        "eslint": "9.34.0",
         "typescript-eslint": "8.42.0",
         "vitest": "3.2.4"
     },
