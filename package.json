@@ -17,6 +17,7 @@
         "prettier": "prettier --config .prettierrc --write \"{src,__{tests,mocks}__}/**/*.ts\"",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
+        "types:check": "tsc --noEmit",
         "ci": "yarn lint && yarn test",
         "ci:afterSuccess": "yarn coverage && yarn release",
         "release": "semantic-release"
