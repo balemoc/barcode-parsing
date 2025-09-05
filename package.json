@@ -1,53 +1,50 @@
 {
-  "name": "barcode-parser",
-  "version": "2.3.0",
-  "description": "This project started out as a Typescript port of the Quagga project - https://serratus.github.io/quaggaJS. - but that direction has diverged greatly. This library does not read barcodes but rather parses the value returned by a dedicated barcode scanner.",
-  "repository": "git@github.com:stonelasley/barcode-parsing.git",
-  "typings": "lib/index.d.ts",
-  "main": "lib/index.js",
-  "files": [
-    "lib"
-  ],
-  "scripts": {
-    "build": "tsc -d",
-    "prepublish": "npm run build",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "coverage": "jest --coverage",
-    "prettier": "prettier --config .prettierrc --write \"{src,__{tests,mocks}__}/**/*.ts\"",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
-    "ci": "yarn lint && yarn test",
-    "ci:afterSuccess": "yarn coverage && yarn release",
-    "release": "semantic-release"
-  },
-  "author": "stonelasley@github.com",
-  "license": "MIT",
-  "devDependencies": {
-    "@eslint/js": "9.34.0",
-    "@semantic-release/changelog": "^6.0.1",
-    "@semantic-release/commit-analyzer": "^9.0.2",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^8.0.2",
-    "@semantic-release/npm": "^8.0.3",
-    "@tsconfig/recommended": "1.0.10",
-    "@types/jest": "^26.0.14",
-    "coveralls": "^3.0.1",
-    "cz-conventional-changelog": "^2.1.0",
-    "jest": "^26.4.2",
-    "prettier": "1.15.3",
-    "semantic-release": "^17.2.3",
-    "ts-jest": "^26.4.0",
-    "typescript": "5.9.2"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "dependencies": {
-    "eslint": "9.34.0",
-    "typescript-eslint": "8.42.0"
-  },
-  "packageManager": "yarn@1.22.21+sha1.1959a18351b811cdeedbd484a8f86c3cc3bbaf72"
+    "name": "barcode-parser",
+    "version": "2.3.0",
+    "description": "This project started out as a Typescript port of the Quagga project - https://serratus.github.io/quaggaJS. - but that direction has diverged greatly. This library does not read barcodes but rather parses the value returned by a dedicated barcode scanner.",
+    "repository": "git@github.com:stonelasley/barcode-parsing.git",
+    "typings": "lib/index.d.ts",
+    "main": "lib/index.js",
+    "files": [
+        "lib"
+    ],
+    "scripts": {
+        "build": "tsc -d",
+        "prepublish": "npm run build",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "coverage": "vitest --coverage",
+        "prettier": "prettier --config .prettierrc --write \"{src,__{tests,mocks}__}/**/*.ts\"",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "ci": "yarn lint && yarn test",
+        "ci:afterSuccess": "yarn coverage && yarn release",
+        "release": "semantic-release"
+    },
+    "author": "stonelasley@github.com",
+    "license": "MIT",
+    "devDependencies": {
+        "@eslint/js": "9.34.0",
+        "@semantic-release/changelog": "^6.0.1",
+        "@semantic-release/commit-analyzer": "^9.0.2",
+        "@semantic-release/git": "^10.0.1",
+        "@semantic-release/github": "^8.0.2",
+        "@semantic-release/npm": "^8.0.3",
+        "@tsconfig/recommended": "1.0.10",
+        "coveralls": "^3.0.1",
+        "cz-conventional-changelog": "^2.1.0",
+        "prettier": "1.15.3",
+        "semantic-release": "^17.2.3",
+        "typescript": "5.9.2",
+        "eslint": "9.34.0",
+        "typescript-eslint": "8.42.0",
+        "vitest": "3.2.4"
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
+    },
+    "dependencies": {},
+    "packageManager": "yarn@1.22.21+sha1.1959a18351b811cdeedbd484a8f86c3cc3bbaf72"
 }
