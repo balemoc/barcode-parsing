@@ -24,11 +24,13 @@
   "author": "stonelasley@github.com",
   "license": "MIT",
   "devDependencies": {
+    "@eslint/js": "9.34.0",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/commit-analyzer": "^9.0.2",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^8.0.2",
     "@semantic-release/npm": "^8.0.3",
+    "@tsconfig/recommended": "1.0.10",
     "@types/jest": "^26.0.14",
     "coveralls": "^3.0.1",
     "cz-conventional-changelog": "^2.1.0",
@@ -36,13 +38,16 @@
     "prettier": "1.15.3",
     "semantic-release": "^17.2.3",
     "ts-jest": "^26.4.0",
-    "tslint": "^5.10.0",
-    "typescript": "^4.0.3"
+    "typescript": "5.9.2"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "dependencies": {}
+  "dependencies": {
+    "eslint": "9.34.0",
+    "typescript-eslint": "8.42.0"
+  },
+  "packageManager": "yarn@1.22.21+sha1.1959a18351b811cdeedbd484a8f86c3cc3bbaf72"
 }
