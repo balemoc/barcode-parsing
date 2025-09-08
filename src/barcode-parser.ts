@@ -5,29 +5,48 @@ import {
     IParserConfiguration,
     IReaderConfiguration,
 } from './models';
+import { ParsedBarcode } from './models/parsed-barcode';
+import { BaseReader } from './readers/base.reader';
 
 export class BarcodeParser {
-    private _readers: any;
-    public get readers(): any {
-        return this._readers;
+    readonly #readers: BaseReader[];
+
+    constructor({
+        readers,
+        readerConfigurations,
+        verbose,
+    }: IParserConfiguration) {
+        this.#readers = [];
+
+        readers.forEach((r) => {
+            let readerConfig: IReaderConfiguration | undefined;
+
+            if (readerConfigurations.length) {
+                const configs = readerConfigurations.filter(
+                    (c) => c !== undefined && r === c.symbology
+                );
+                readerConfig = configs.pop();
+            }
+
+            const readerToUse = READER_TYPES[r];
+
+            if (readerToUse) {
+                // can be gs-1reader etc
+                this.#readers.push(new readerToUse(readerConfig));
+            }
+        });
+
+        if (verbose) {
+            this.#readers.forEach((reader) =>
+                console.log('Reader Initialized: ', reader)
+            );
+        }
     }
 
-    public set readers(value: any) {
-        this._readers = value;
-    }
+    public parse(barcodeVal: string): IBarcodeValue {
+        let result: IBarcodeValue | null = null;
 
-    constructor(config: IParserConfiguration) {
-        this.initReaders(
-            config.readers,
-            config.readerConfigurations,
-            config.verbose,
-        );
-    }
-
-    public parse(barcodeVal: any): IBarcodeValue {
-        let result: IBarcodeValue = null;
-
-        this._readers.forEach(reader => {
+        this.#readers.forEach((reader) => {
             if (reader.validate(barcodeVal)) {
                 result = reader.decode(barcodeVal);
             }
@@ -39,32 +58,5 @@ export class BarcodeParser {
             result.success = false;
         }
         return result;
-    }
-
-    protected initReaders(
-        readerTypes: string[],
-        configurations: IReaderConfiguration[],
-        verbose = false,
-    ) {
-        this.readers = readerTypes.map(r => {
-            let readerConfig: IReaderConfiguration;
-            if (configurations.length > 0) {
-                const configs = configurations.filter(
-                    c => c !== undefined && r === c.symbology,
-                );
-                readerConfig = configs.pop();
-            }
-            if (READER_TYPES[r]) {
-                return new READER_TYPES[r](readerConfig);
-            }
-        });
-
-        if (verbose) {
-           
-            this._readers.forEach(reader =>
-                console.log('Reader Initialized: ', reader),
-            );
-           
-        }
     }
 }
