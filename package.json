@@ -9,6 +9,7 @@
         "lib"
     ],
     "scripts": {
+        "dev": "tsc --noEmit --watch",
         "build": "tsc -d",
         "prepublishOnly": "npm run build",
         "test": "vitest run",
