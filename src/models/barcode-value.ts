@@ -1,5 +1,14 @@
-import { IBarcodeValue } from './ibarcode-value';
 import { AICode } from '../enums';
+
+export interface IBarcodeValue {
+    symbology: string;
+    rawValue: string;
+    values: any;
+    errorMessage: string;
+    success: boolean;
+    checkDigit: number;
+    pluck(valueKey: string): any;
+}
 
 export class BarcodeValue implements IBarcodeValue {
     private _values: any;
