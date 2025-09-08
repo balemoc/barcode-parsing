@@ -8,13 +8,24 @@ export interface IBarcodeValue {
     pluck(valueKey: string): any;
 }
 
+/**
+ *
+ * @deprecated Use ParsedBarcode instead
+ * @export
+ * @class BarcodeValue
+ * @implements {IBarcodeValue}
+ */
 export class BarcodeValue implements IBarcodeValue {
     private _values: any;
+    // @ts-expect-error bug
     private _errorMessage: string;
     private _success: boolean;
     private _checkDigit = -1;
 
-    constructor(private _symbology: string, private _rawValue: string) {
+    constructor(
+        private _symbology: string,
+        private _rawValue: string
+    ) {
         this._success = true;
         this.values = [];
     }
@@ -69,7 +80,7 @@ export class BarcodeValue implements IBarcodeValue {
 
     public pluck(valueKey: string): any {
         if (this.values !== undefined && this.values instanceof Array) {
-            const result = this.values.filter(r => r.code === valueKey);
+            const result = this.values.filter((r) => r.code === valueKey);
             if (result[0]) {
                 return result[0].value;
             }

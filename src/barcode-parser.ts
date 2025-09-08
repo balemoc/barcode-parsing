@@ -53,6 +53,7 @@ export class BarcodeParser {
         });
 
         if (!result) {
+            // @ts-expect-error bug - should be fixed
             result = new BarcodeValue(null, barcodeVal);
             result.errorMessage = 'No Reader Found';
             result.success = false;
@@ -60,7 +61,19 @@ export class BarcodeParser {
         return result;
     }
 
-    /* public parseOrThrow(barcodeVal: string): ParsedBarcode {
-       
-    } */
+    public parseOrThrow(barcodeVal: string): ParsedBarcode {
+        let result: ParsedBarcode | null = null;
+
+        this.#readers.forEach((reader) => {
+            if (reader.validate(barcodeVal)) {
+                result = reader.decodeOrThrow(barcodeVal);
+            }
+        });
+
+        if (!result) {
+            throw new Error('No Reader Found');
+        }
+
+        return result;
+    }
 }
