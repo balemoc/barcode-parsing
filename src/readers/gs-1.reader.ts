@@ -38,13 +38,10 @@ export class GS1Reader extends BaseReader {
                 this.symbology,
                 sterilizedValue
             );
-            console.log('Value without ID', valWithoutId);
 
             result.values = valWithoutId
                 .split(DELIMITER)
                 .flatMap((val) => this.parseValues(val));
-
-            console.log('Parsed values', result.values);
         } catch (e) {
             result.success = false;
             result.errorMessage =

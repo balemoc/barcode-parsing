@@ -54,10 +54,44 @@ describe('baseGtinReader', () => {
 
             expect(actual.checkDigit).toBe(1);
         });
+
+        test('checkdigit - should return last character', () => {
+            const actual: number = classUnderTest.checkDigit('123456');
+
+            expect(actual).toBe(6);
+        });
     });
 
-    describe('checkDigit', () => {
-        test('should return last character', () => {
+    describe('decodeOrThrow', () => {
+        test('should thrown error for invalid value', () => {
+            expect(() => classUnderTest.decodeOrThrow('ii')).toThrowError(
+                'Invalid Value'
+            );
+        });
+
+        test('should set symbology on result', () => {
+            const actual = classUnderTest.decodeOrThrow('11111');
+
+            expect(actual.symbology).toBe(SYMBOLOGY);
+        });
+
+        test('should set rawValue on result', () => {
+            const val = '11111';
+
+            const actual = classUnderTest.decodeOrThrow(val);
+
+            expect(actual.rawValue).toBe(val);
+        });
+
+        test('should set checkDigit on result', () => {
+            const val = '11111';
+
+            const actual = classUnderTest.decode(val);
+
+            expect(actual.checkDigit).toBe(1);
+        });
+
+        test('checkdigit - should return last character', () => {
             const actual: number = classUnderTest.checkDigit('123456');
 
             expect(actual).toBe(6);
