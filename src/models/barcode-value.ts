@@ -1,5 +1,3 @@
-import { AICode } from '../enums';
-
 export interface IBarcodeValue {
     symbology: string;
     rawValue: string;
@@ -69,7 +67,7 @@ export class BarcodeValue implements IBarcodeValue {
         this._checkDigit = value;
     }
 
-    public pluck(valueKey: string | AICode): any {
+    public pluck(valueKey: string): any {
         if (this.values !== undefined && this.values instanceof Array) {
             const result = this.values.filter(r => r.code === valueKey);
             if (result[0]) {
