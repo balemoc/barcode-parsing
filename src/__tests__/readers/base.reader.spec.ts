@@ -1,23 +1,28 @@
 import { BaseReader } from '../../readers/base.reader';
 import { IBarcodeValue, IReaderConfiguration } from '../../models';
+import { ParsedBarcode } from '../../models/parsed-barcode';
 
-const REG: any = /[0-9]/;
+const REG = /[0-9]/;
 const SYMBOLOGY = 'MYSYMBOLOGY';
 
 class TestReader extends BaseReader {
+    public decodeOrThrow(): ParsedBarcode {
+        throw new Error('Method not implemented.');
+    }
+
     constructor(readerConfig?: IReaderConfiguration) {
         super(SYMBOLOGY, REG, readerConfig);
     }
 
-    public get config(): any {
+    public get config() {
         return this._readerConfig;
     }
 
-    public validate(val: any): any {
+    public validate(val: string) {
         return super.validate(val);
     }
 
-    public decode(value: string): IBarcodeValue {
+    public decode(): IBarcodeValue {
         return {} as IBarcodeValue;
     }
 }
@@ -42,10 +47,8 @@ describe('baseReader', () => {
 
     describe('validate', () => {
         test('should validate using validationExpression', () => {
-           
             expect(classUnderTest.validate('1')).toBe(true);
             expect(classUnderTest.validate('a')).toBe(false);
-           
         });
     });
 });

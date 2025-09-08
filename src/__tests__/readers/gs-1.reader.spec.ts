@@ -7,7 +7,7 @@ export class Tester extends GS1Reader {
         return this.parseValues(v);
     }
 
-    public testGetAi(c: string): ApplicationIdentifier {
+    public testGetAi(c: string) {
         return this.findAi(c);
     }
 
@@ -140,10 +140,10 @@ describe('Gs1Reader', () => {
 
             testVals.forEach((val) => {
                 const actual = classUnderTest.testGetAi(val);
-                expect(actual.code).toBe('01');
-                expect(actual.description).toBe('Global Trade Item Number');
-                expect(actual.length).toBe(14);
-                expect(actual.variableLength).toBe(false);
+                expect(actual?.code).toBe('01');
+                expect(actual?.description).toBe('Global Trade Item Number');
+                expect(actual?.length).toBe(14);
+                expect(actual?.variableLength).toBe(false);
             });
         });
 
@@ -153,10 +153,10 @@ describe('Gs1Reader', () => {
             testVals.forEach((val) => {
                 const actual = classUnderTest.testGetAi(val);
 
-                expect(actual.code).toBe('241');
-                expect(actual.description).toBe('Customer Part Number');
-                expect(actual.length).toBe(30);
-                expect(actual.variableLength).toBe(true);
+                expect(actual?.code).toBe('241');
+                expect(actual?.description).toBe('Customer Part Number');
+                expect(actual?.length).toBe(30);
+                expect(actual?.variableLength).toBe(true);
             });
         });
 
@@ -166,12 +166,12 @@ describe('Gs1Reader', () => {
             testVals.forEach((val) => {
                 const actual = classUnderTest.testGetAi(val);
 
-                expect(actual.code).toBe('8020');
-                expect(actual.description).toBe(
+                expect(actual?.code).toBe('8020');
+                expect(actual?.description).toBe(
                     'Payment slip preference number'
                 );
-                expect(actual.length).toBe(25);
-                expect(actual.variableLength).toBe(true);
+                expect(actual?.length).toBe(25);
+                expect(actual?.variableLength).toBe(true);
             });
         });
 
@@ -179,10 +179,10 @@ describe('Gs1Reader', () => {
             config.ai = adHocAi;
             const { code, description, length, variableLength } = adHocAi;
             const actual = classUnderTest.testGetAi(code);
-            expect(actual.code).toBe(code);
-            expect(actual.description).toBe(description);
-            expect(actual.length).toBe(length);
-            expect(actual.variableLength).toBe(variableLength);
+            expect(actual?.code).toBe(code);
+            expect(actual?.description).toBe(description);
+            expect(actual?.length).toBe(length);
+            expect(actual?.variableLength).toBe(variableLength);
         });
     });
 

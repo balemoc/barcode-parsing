@@ -4,11 +4,11 @@ import { ParsedBarcode } from '../models/parsed-barcode';
 export abstract class BaseReader {
     constructor(
         protected _symbology: string,
-        protected _validationExpression: RegExp,
-        protected _readerConfig: IReaderConfiguration
+        protected _validationExpression: RegExp | null,
+        protected _readerConfig?: IReaderConfiguration | null
     ) {}
 
-    public get configuration(): IReaderConfiguration {
+    public get configuration() {
         return this._readerConfig;
     }
 
@@ -16,12 +16,14 @@ export abstract class BaseReader {
         return this._symbology;
     }
 
-    public get validationExpression(): RegExp {
+    public get validationExpression(): RegExp | null {
         return this._validationExpression;
     }
 
     public validate(value: string): boolean {
-        return this.validationExpression.test(value);
+        return this.validationExpression
+            ? this.validationExpression.test(value)
+            : false;
     }
 
     public abstract decode(value: string): IBarcodeValue;

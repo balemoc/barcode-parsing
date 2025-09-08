@@ -10,10 +10,6 @@ class TestClass extends BarcodeParser {
     public parse(barcodeVal: any): IBarcodeValue {
         return super.parse(barcodeVal);
     }
-
-    protected initReaders(readerTypes: string[], configurations: IReaderConfiguration[]) {
-        return super.initReaders(readerTypes, configurations);
-    }
 }
 
 describe('BarcodeParser', () => {

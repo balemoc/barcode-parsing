@@ -89,25 +89,78 @@ describe('code39Reader', () => {
                 expect.arrayContaining([
                     { code: 'foo', value: '12' },
                     { code: 'bar', value: '345' },
-                ]),
+                ])
+            );
+        });
+    });
+
+    describe('decodeOrThrow', () => {
+        test('should include symbology in result', () => {
+            const result = classUnderTest.decodeOrThrow(decodeValues[0]);
+            expect(result.symbology).toBe('code_39');
+        });
+
+        test('should include rawValue in result', () => {
+            const result = classUnderTest.decodeOrThrow(decodeValues[1]);
+            expect(result.rawValue).toBe(decodeValues[1]);
+        });
+
+        it('should return empty values if no embedded data', () => {
+            const configWithNoValues = {
+                symbology: Symbologies.Code39,
+                values: [],
+            };
+
+            classUnderTest = new Code39Reader(configWithNoValues);
+            const result = classUnderTest.decodeOrThrow(decodeValues[5]);
+            expect(result.values).toEqual([]);
+        });
+
+        it('should return empty array if no config', () => {
+            classUnderTest = new Code39Reader();
+            const result = classUnderTest.decodeOrThrow(decodeValues[5]);
+            expect(result.values).toEqual([]);
+        });
+
+        it('should parse embedded data indexes from config', () => {
+            const configWithEmbeddedData = {
+                symbology: Symbologies.Code39,
+                values: [
+                    {
+                        length: 2,
+                        start: 0,
+                        valueType: 'foo',
+                    },
+                    {
+                        length: 3,
+                        start: 2,
+                        valueType: 'bar',
+                    },
+                ],
+            };
+
+            classUnderTest = new Code39Reader(configWithEmbeddedData);
+            const result = classUnderTest.decodeOrThrow(decodeValues[5]);
+
+            expect(result.values).toEqual(
+                expect.arrayContaining([
+                    { code: 'foo', value: '12' },
+                    { code: 'bar', value: '345' },
+                ])
             );
         });
     });
 
     describe('validate', () => {
-        decodeValues.forEach(value => {
+        decodeValues.forEach((value) => {
             test('should return true for valid value: ' + value, () => {
-               
                 expect(classUnderTest.validate(value)).toBe(true);
-               
             });
         });
 
-        invalidValues.forEach(value => {
+        invalidValues.forEach((value) => {
             test('should return false for invalid value: ' + value, () => {
-               
                 expect(classUnderTest.validate(value)).toBe(false);
-               
             });
         });
     });

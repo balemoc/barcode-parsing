@@ -74,8 +74,8 @@ export class GS1Reader extends BaseReader {
         return result;
     }
 
-    protected findAi(value: string): ApplicationIdentifier {
-        let ai: ApplicationIdentifier = null;
+    protected findAi(value: string) {
+        let ai: ApplicationIdentifier | null = null;
         let codeLength = 2;
         while (ai === null && codeLength < 5) {
             const code = value.substr(0, codeLength);
@@ -93,11 +93,15 @@ export class GS1Reader extends BaseReader {
         let vals: BarcodeValueEntry[] = [];
         const ai = this.findAi(input);
 
-        if (input.length > ai.totalLength) {
-            vals = vals.concat(this.parseValues(input.substr(ai.totalLength)));
-        }
+        if (ai) {
+            if (input.length > ai.totalLength) {
+                vals = vals.concat(
+                    this.parseValues(input.substr(ai.totalLength))
+                );
+            }
 
-        vals.push(this.parseValue(ai, input));
+            vals.push(this.parseValue(ai, input));
+        }
 
         return vals;
     }

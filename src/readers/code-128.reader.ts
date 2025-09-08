@@ -9,6 +9,7 @@ import {
 import { CONTROLCHARS } from '../config';
 import { AimCodes, Symbologies } from '../enums';
 import { AimParser } from '../utils';
+import { BarcodeValueEntry, ParsedBarcode } from '../models/parsed-barcode';
 
 const DELIMITER = ' ';
 
@@ -20,45 +21,27 @@ export class Code128Reader extends BaseReader {
     public validate(value: string): boolean {
         const idPrefix = value.indexOf(AimCodes.CODE128);
 
-        const valueLength = AimParser.parseAimCode(this.symbology, value)
-            .length;
+        const valueLength = AimParser.parseAimCode(
+            this.symbology,
+            value
+        ).length;
         return idPrefix === 0 && valueLength > 0;
-    }
-
-    public decode(value: string): IBarcodeValue {
-        const sterilizedValue = this.removeControlCharacters(value);
-        const result = new BarcodeValue(this.symbology, value);
-        try {
-            this.tryValidate(value);
-            const valWithoutId = AimParser.parseAimCode(
-                this.symbology,
-                sterilizedValue,
-            );
-            result.values = [].concat.apply(
-                [],
-                valWithoutId.split(DELIMITER).map(val => this.parseValues(val)),
-            );
-        } catch (ex) {
-            result.success = false;
-            result.errorMessage = ex;
-        }
-        return result;
     }
 
     protected removeControlCharacters(value: string): string {
         let result = value;
-        CONTROLCHARS.forEach(charCode => {
+        CONTROLCHARS.forEach((charCode) => {
             result = result.replace(String.fromCharCode(charCode), DELIMITER);
         });
         return result;
     }
 
-    protected findAi(value: string): ApplicationIdentifier {
-        let ai: ApplicationIdentifier = null;
+    protected findAi(value: string) {
+        let ai: ApplicationIdentifier | null = null;
         let codeLength = 2;
         while (ai === null && codeLength < 5) {
             const code = value.substr(0, codeLength);
-            const ais = APPLICATION_IDENTIFIERS.filter(x => {
+            const ais = APPLICATION_IDENTIFIERS.filter((x) => {
                 return x.code === code;
             });
             if (ais.length > 0) {
@@ -70,8 +53,8 @@ export class Code128Reader extends BaseReader {
         return ai;
     }
 
-    protected parseValue(ai: ApplicationIdentifier, input: string): object {
-        let val: any = null;
+    protected parseValue(ai: ApplicationIdentifier, input: string) {
+        let val: string | number | null = null;
         if (ai.fractional !== true) {
             val = input.substr(ai.code.length, ai.length);
         } else {
@@ -87,16 +70,54 @@ export class Code128Reader extends BaseReader {
         };
     }
 
-    protected parseValues(input: string): object[] {
-        let vals = Array<object>();
+    protected parseValues(input: string) {
+        let vals: BarcodeValueEntry[] = [];
         const ai = this.findAi(input);
 
-        if (input.length > ai.totalLength) {
-            vals = vals.concat(this.parseValues(input.substr(ai.totalLength)));
+        if (ai) {
+            if (input.length > ai.totalLength) {
+                vals = vals.concat(
+                    this.parseValues(input.substr(ai.totalLength))
+                );
+            }
+
+            vals.push(this.parseValue(ai, input));
         }
 
-        vals.push(this.parseValue(ai, input));
-
         return vals;
+    }
+
+    public decode(value: string): IBarcodeValue {
+        const sterilizedValue = this.removeControlCharacters(value);
+        const result = new BarcodeValue(this.symbology, value);
+        try {
+            this.tryValidate(value);
+            const valWithoutId = AimParser.parseAimCode(
+                this.symbology,
+                sterilizedValue
+            );
+            result.values = valWithoutId
+                .split(DELIMITER)
+                .flatMap((val) => this.parseValues(val));
+        } catch (ex) {
+            result.success = false;
+            result.errorMessage =
+                ex instanceof Error ? ex.message : JSON.stringify(ex);
+        }
+        return result;
+    }
+
+    public decodeOrThrow(value: string): ParsedBarcode {
+        const sterilizedValue = this.removeControlCharacters(value);
+
+        this.tryValidate(value);
+        const valWithoutId = AimParser.parseAimCode(
+            this.symbology,
+            sterilizedValue
+        );
+        const values = valWithoutId
+            .split(DELIMITER)
+            .flatMap((val) => this.parseValues(val));
+        return new ParsedBarcode(this.symbology, value, values);
     }
 }

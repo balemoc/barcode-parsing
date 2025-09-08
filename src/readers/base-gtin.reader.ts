@@ -13,7 +13,7 @@ export class BaseGtinReader extends BaseReader {
     }
 
     protected checkDigit(value: string): number {
-        return parseInt(value.substring(value.length - 1), null);
+        return parseInt(value.substring(value.length - 1), undefined);
     }
 
     protected parseValues(value: string): string {
@@ -25,11 +25,10 @@ export class BaseGtinReader extends BaseReader {
         try {
             this.tryValidate(value);
             result.values = this.parseValues(value);
-            console.log('Parsed Values: ', result.values);
             result.checkDigit = this.checkDigit(value);
         } catch (ex) {
             result.success = false;
-            result.errorMessage = ex.message;
+            result.errorMessage = ex instanceof Error ? ex.message : JSON.stringify(ex);
         }
         return result;
     }
