@@ -10,6 +10,7 @@ import {
 } from '../models';
 
 import { AimParser } from '../utils';
+import { BarcodeValueEntry, ParsedBarcode } from '../models/parsed-barcode';
 
 const DELIMITER = ' ';
 
@@ -21,8 +22,10 @@ export class GS1Reader extends BaseReader {
     public validate(value: string): boolean {
         const idPrefix = value.indexOf(AimCodes.GS1);
 
-        const valueLength = AimParser.parseAimCode(this.symbology, value)
-            .length;
+        const valueLength = AimParser.parseAimCode(
+            this.symbology,
+            value
+        ).length;
         return idPrefix === 0 && valueLength > 0;
     }
 
@@ -33,22 +36,42 @@ export class GS1Reader extends BaseReader {
             this.tryValidate(value);
             const valWithoutId = AimParser.parseAimCode(
                 this.symbology,
-                sterilizedValue,
+                sterilizedValue
             );
-            result.values = [].concat.apply(
-                [],
-                valWithoutId.split(DELIMITER).map(val => this.parseValues(val)),
-            );
-        } catch (ex) {
+            console.log('Value without ID', valWithoutId);
+
+            result.values = valWithoutId
+                .split(DELIMITER)
+                .flatMap((val) => this.parseValues(val));
+
+            console.log('Parsed values', result.values);
+        } catch (e) {
             result.success = false;
-            result.errorMessage = ex;
+            result.errorMessage =
+                e instanceof Error ? e.message : JSON.stringify(e);
         }
         return result;
     }
 
+    public decodeOrThrow(value: string): ParsedBarcode {
+        const sterilizedValue = this.removeControlCharacters(value);
+
+        this.tryValidate(value);
+        const valWithoutId = AimParser.parseAimCode(
+            this.symbology,
+            sterilizedValue
+        );
+
+        const values = valWithoutId
+            .split(DELIMITER)
+            .flatMap((val) => this.parseValues(val));
+
+        return new ParsedBarcode(this.symbology, value, values);
+    }
+
     protected removeControlCharacters(value: string): string {
         let result = value;
-        CONTROLCHARS.forEach(charCode => {
+        CONTROLCHARS.forEach((charCode) => {
             result = result.replace(String.fromCharCode(charCode), DELIMITER);
         });
         return result;
@@ -59,7 +82,7 @@ export class GS1Reader extends BaseReader {
         let codeLength = 2;
         while (ai === null && codeLength < 5) {
             const code = value.substr(0, codeLength);
-            const ais = this.aiList.filter(x => x.code === code);
+            const ais = this.aiList.filter((x) => x.code === code);
             if (ais.length > 0) {
                 ai = ais[0];
             } else {
@@ -69,8 +92,22 @@ export class GS1Reader extends BaseReader {
         return ai;
     }
 
-    protected parseValue(ai: ApplicationIdentifier, input: string): object {
-        let val: any = null;
+    protected parseValues(input: string) {
+        let vals: BarcodeValueEntry[] = [];
+        const ai = this.findAi(input);
+
+        if (input.length > ai.totalLength) {
+            vals = vals.concat(this.parseValues(input.substr(ai.totalLength)));
+        }
+
+        vals.push(this.parseValue(ai, input));
+
+        return vals;
+    }
+
+    protected parseValue(ai: ApplicationIdentifier, input: string) {
+        let val: string | number | undefined = undefined;
+
         if (ai.fractional !== true) {
             val = input.substr(ai.code.length, ai.length);
         } else {
@@ -86,21 +123,8 @@ export class GS1Reader extends BaseReader {
         };
     }
 
-    protected parseValues(input: string): object[] {
-        let vals = Array<object>();
-        const ai = this.findAi(input);
-
-        if (input.length > ai.totalLength) {
-            vals = vals.concat(this.parseValues(input.substr(ai.totalLength)));
-        }
-
-        vals.push(this.parseValue(ai, input));
-
-        return vals;
-    }
-
     protected get aiList(): ApplicationIdentifier[] {
-        return (this.configuration?.ai != null)
+        return this.configuration?.ai != null
             ? [...APPLICATION_IDENTIFIERS, this.configuration?.ai]
             : APPLICATION_IDENTIFIERS;
     }

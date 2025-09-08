@@ -1,10 +1,11 @@
 import { IBarcodeValue, IReaderConfiguration } from '../models';
+import { ParsedBarcode } from '../models/parsed-barcode';
 
 export abstract class BaseReader {
     constructor(
         protected _symbology: string,
         protected _validationExpression: RegExp,
-        protected _readerConfig: IReaderConfiguration,
+        protected _readerConfig: IReaderConfiguration
     ) {}
 
     public get configuration(): IReaderConfiguration {
@@ -24,6 +25,8 @@ export abstract class BaseReader {
     }
 
     public abstract decode(value: string): IBarcodeValue;
+
+    public abstract decodeOrThrow(value: string): ParsedBarcode;
 
     protected tryValidate(value: string): void {
         if (!this.validate(value)) {

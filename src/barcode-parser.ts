@@ -59,4 +59,8 @@ export class BarcodeParser {
         }
         return result;
     }
+
+    /* public parseOrThrow(barcodeVal: string): ParsedBarcode {
+       
+    } */
 }

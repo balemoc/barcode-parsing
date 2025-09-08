@@ -30,7 +30,7 @@ describe('Gs1Reader', () => {
             identifier: ']C1',
         } as IReaderConfiguration;
 
-            // 7009 may be valid somtime in the future
+        // 7009 may be valid somtime in the future
         adHocAi = new ApplicationIdentifier('7009', 'My Custom AI', 6, true);
         classUnderTest = new Tester(config);
     });
@@ -41,9 +41,9 @@ describe('Gs1Reader', () => {
             expect(classUnderTest.testValidate('C1')).toBe(false);
             expect(classUnderTest.testValidate(']]C1')).toBe(false);
             expect(classUnderTest.testValidate(']C1A')).toBe(true);
-            expect(classUnderTest.testValidate(']C1111111111111111111111111')).toBe(
-                true,
-            );
+            expect(
+                classUnderTest.testValidate(']C1111111111111111111111111')
+            ).toBe(true);
         });
 
         test('should validate value is at least 1 character', () => {
@@ -66,7 +66,7 @@ describe('Gs1Reader', () => {
 
         test('should parse multiple fixed width AI', () => {
             const actual = classUnderTest.testParseValues(
-                '019628329083947611150523',
+                '019628329083947611150523'
             );
             expect(actual).toContainEqual({
                 code: '01',
@@ -75,7 +75,7 @@ describe('Gs1Reader', () => {
             expect(actual).toContainEqual({ code: '11', value: '150523' });
 
             const actual1 = classUnderTest.testParseValues(
-                '01962832908394761115052312999999',
+                '01962832908394761115052312999999'
             );
             expect(actual1).toContainEqual({
                 code: '01',
@@ -113,7 +113,7 @@ describe('Gs1Reader', () => {
 
         test('should handle fractional after non-fractional', () => {
             const actual = classUnderTest.testParseValues(
-                '36161234560196283290839476',
+                '36161234560196283290839476'
             );
             expect(actual).toContainEqual({ code: '361', value: 0.123456 });
             expect(actual).toContainEqual({
@@ -124,7 +124,7 @@ describe('Gs1Reader', () => {
 
         test('should handle non-fractional after fractional ', () => {
             const actual = classUnderTest.testParseValues(
-                '01962832908394763916123456',
+                '01962832908394763916123456'
             );
             expect(actual).toContainEqual({ code: '391', value: 0.123456 });
             expect(actual).toContainEqual({
@@ -138,7 +138,7 @@ describe('Gs1Reader', () => {
         test('should get 2 character Ai', () => {
             const testVals = ['01', '0199999', '01ABCDEFG'];
 
-            testVals.forEach(val => {
+            testVals.forEach((val) => {
                 const actual = classUnderTest.testGetAi(val);
                 expect(actual.code).toBe('01');
                 expect(actual.description).toBe('Global Trade Item Number');
@@ -150,7 +150,7 @@ describe('Gs1Reader', () => {
         test('should get 3 character Ai', () => {
             const testVals = ['241', '241ABCDEFG', '2419999999'];
 
-            testVals.forEach(val => {
+            testVals.forEach((val) => {
                 const actual = classUnderTest.testGetAi(val);
 
                 expect(actual.code).toBe('241');
@@ -163,12 +163,12 @@ describe('Gs1Reader', () => {
         test('should get 4 character Ai', () => {
             const testVals = ['8020', '8020ABCDEFGHIJ', '8020999999999'];
 
-            testVals.forEach(val => {
+            testVals.forEach((val) => {
                 const actual = classUnderTest.testGetAi(val);
 
                 expect(actual.code).toBe('8020');
                 expect(actual.description).toBe(
-                    'Payment slip preference number',
+                    'Payment slip preference number'
                 );
                 expect(actual.length).toBe(25);
                 expect(actual.variableLength).toBe(true);
@@ -207,7 +207,43 @@ describe('Gs1Reader', () => {
             classUnderTest = new Tester(config);
 
             const actual = classUnderTest.decode(
-                ']C10196283290839476101 1001 2101',
+                ']C10196283290839476101 1001 2101'
+            );
+            expect(actual.values).toContainEqual({
+                code: '01',
+                value: '96283290839476',
+            });
+            expect(actual.values).toContainEqual({ code: '10', value: '1' });
+            expect(actual.values).toContainEqual({ code: '10', value: '01' });
+            expect(actual.values).toContainEqual({ code: '21', value: '01' });
+        });
+    });
+
+    describe('decodeOrThrow', () => {
+        test('should split on default delimiter', () => {
+            const actual = classUnderTest.decodeOrThrow(
+                ']C112999999101 1001 2101'
+            );
+
+            expect(actual.values).toContainEqual({
+                code: '12',
+                value: '999999',
+            });
+            expect(actual.values).toContainEqual({ code: '10', value: '1' });
+            expect(actual.values).toContainEqual({ code: '10', value: '01' });
+            expect(actual.values).toContainEqual({ code: '21', value: '01' });
+        });
+
+        test('should split on space if no specified delimiter', () => {
+            config = {
+                delimiter: '',
+                identifier: ']C1',
+            } as IReaderConfiguration;
+
+            classUnderTest = new Tester(config);
+
+            const actual = classUnderTest.decodeOrThrow(
+                ']C10196283290839476101 1001 2101'
             );
             expect(actual.values).toContainEqual({
                 code: '01',
@@ -224,32 +260,32 @@ describe('Gs1Reader', () => {
             const expected = ']C102084135560009503703 10ES003472002';
             const input = expected.replace(' ', String.fromCharCode(29));
             expect(classUnderTest.removeControlCharacters(input)).toBe(
-                expected,
+                expected
             );
         });
     });
 
-    test('should parse known gs1s', () => {
+    test('should parse known gs1s in decode', () => {
         const actual = classUnderTest.decode(
-            ']C1019628329083134011150523310200059421145143242042',
+            ']C1019628329083134011150523310200059421145143242042'
         );
         const actual1 = classUnderTest.decode(
-            ']C1019628329083947611150529310200178721145149307335',
+            ']C1019628329083947611150529310200178721145149307335'
         );
         const actual2 = classUnderTest.decode(
-            ']C102084135560009503703 10ES003472002',
+            ']C102084135560009503703 10ES003472002'
         );
         const actual3 = classUnderTest.decode(
             ']C102084135560009503703 10ES003472002'.replace(
                 ' ',
-                String.fromCharCode(29),
-            ),
+                String.fromCharCode(29)
+            )
         );
         const actual4 = classUnderTest.decode(
             ']C102084135560009503703 7007211024211101 7006210101'.replace(
                 ' ',
-                String.fromCharCode(29),
-            ),
+                String.fromCharCode(29)
+            )
         );
 
         expect(actual.values).toContainEqual({
@@ -310,13 +346,94 @@ describe('Gs1Reader', () => {
         });
     });
 
-    test('should parse adhoc', () => {
-        config.ai = adHocAi;
-        const actual = classUnderTest.decode(
-            `]C1019628329083134011150523310200059421145143242042 ${adHocAi.code}123456`,
+    test('should parse known gs1s in decodeOrThrow', () => {
+        const actual = classUnderTest.decodeOrThrow(
+            ']C1019628329083134011150523310200059421145143242042'
         );
-        const actual2 = classUnderTest.decode(
-            `]C10208413556000950${adHocAi.code}1234563703 10ES003472002`,
+        const actual1 = classUnderTest.decodeOrThrow(
+            ']C1019628329083947611150529310200178721145149307335'
+        );
+        const actual2 = classUnderTest.decodeOrThrow(
+            ']C102084135560009503703 10ES003472002'
+        );
+        const actual3 = classUnderTest.decodeOrThrow(
+            ']C102084135560009503703 10ES003472002'.replace(
+                ' ',
+                String.fromCharCode(29)
+            )
+        );
+        const actual4 = classUnderTest.decodeOrThrow(
+            ']C102084135560009503703 7007211024211101 7006210101'.replace(
+                ' ',
+                String.fromCharCode(29)
+            )
+        );
+
+        expect(actual.values).toContainEqual({
+            code: '21',
+            value: '145143242042',
+        });
+        expect(actual.values).toContainEqual({ code: '310', value: 5.94 });
+        expect(actual.values).toContainEqual({ code: '11', value: '150523' });
+        expect(actual.values).toContainEqual({
+            code: '01',
+            value: '96283290831340',
+        });
+
+        expect(actual1.values).toContainEqual({
+            code: '21',
+            value: '145149307335',
+        });
+        expect(actual1.values).toContainEqual({ code: '310', value: 17.87 });
+        expect(actual1.values).toContainEqual({ code: '11', value: '150529' });
+        expect(actual1.values).toContainEqual({
+            code: '01',
+            value: '96283290839476',
+        });
+
+        expect(actual2.values).toContainEqual({
+            code: '02',
+            value: '08413556000950',
+        });
+        expect(actual2.values).toContainEqual({ code: '37', value: '03' });
+        expect(actual2.values).toContainEqual({
+            code: '10',
+            value: 'ES003472002',
+        });
+
+        expect(actual3.values).toContainEqual({
+            code: '02',
+            value: '08413556000950',
+        });
+        expect(actual3.values).toContainEqual({ code: '37', value: '03' });
+        expect(actual3.values).toContainEqual({
+            code: '10',
+            value: 'ES003472002',
+        });
+
+        expect(actual4.values).toContainEqual({
+            code: '02',
+            value: '08413556000950',
+        });
+        expect(actual4.values).toContainEqual({ code: '37', value: '03' });
+        expect(actual4.values).toContainEqual({
+            code: '7007',
+            value: '211024211101',
+        });
+
+        expect(actual4.values).toContainEqual({
+            code: '7006',
+            value: '210101',
+        });
+    });
+
+    test('should parse adhoc in decodeOrThrow', () => {
+        config.ai = adHocAi;
+        const actual = classUnderTest.decodeOrThrow(
+            `]C1019628329083134011150523310200059421145143242042 ${adHocAi.code}123456`
+        );
+        const actual2 = classUnderTest.decodeOrThrow(
+            `]C10208413556000950${adHocAi.code}1234563703 10ES003472002`
         );
 
         expect(actual.values).toContainEqual({
@@ -348,5 +465,42 @@ describe('Gs1Reader', () => {
             value: '123456',
         });
     });
+    test('should parse adhoc in decode', () => {
+        config.ai = adHocAi;
+        const actual = classUnderTest.decode(
+            `]C1019628329083134011150523310200059421145143242042 ${adHocAi.code}123456`
+        );
+        const actual2 = classUnderTest.decode(
+            `]C10208413556000950${adHocAi.code}1234563703 10ES003472002`
+        );
 
+        expect(actual.values).toContainEqual({
+            code: '21',
+            value: '145143242042',
+        });
+        expect(actual.values).toContainEqual({ code: '310', value: 5.94 });
+        expect(actual.values).toContainEqual({ code: '11', value: '150523' });
+        expect(actual.values).toContainEqual({
+            code: '01',
+            value: '96283290831340',
+        });
+        expect(actual.values).toContainEqual({
+            code: adHocAi.code,
+            value: '123456',
+        });
+
+        expect(actual2.values).toContainEqual({
+            code: '02',
+            value: '08413556000950',
+        });
+        expect(actual2.values).toContainEqual({ code: '37', value: '03' });
+        expect(actual2.values).toContainEqual({
+            code: '10',
+            value: 'ES003472002',
+        });
+        expect(actual2.values).toContainEqual({
+            code: adHocAi.code,
+            value: '123456',
+        });
+    });
 });
