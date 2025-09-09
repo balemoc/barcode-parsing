@@ -9,8 +9,9 @@
         "lib"
     ],
     "scripts": {
-        "dev": "tsc --noEmit --watch",
-        "build": "tsc -d",
+        "dev": "tsdown --watch",
+        "build": "tsdown",
+        "validate:package": "npx --yes @arethetypeswrong/cli --pack .",
         "prepublishOnly": "npm run build",
         "test": "vitest run",
         "test:watch": "vitest",

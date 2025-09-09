@@ -9,9 +9,9 @@ export interface BarcodeValueEntry {
 export interface BarcodeData
     extends Omit<IBarcodeValue, 'pluck' | 'errorMessage' | 'success'> {
     values: BarcodeValueEntry[];
-    getApplicationIdentifier(
+    getApplicationIdentifier<T extends string | number | Date>(
         identifierCode: string | AICode
-    ): string | number | Date | undefined;
+    ): T | undefined;
 }
 
 export class ParsedBarcode implements BarcodeData {
@@ -22,9 +22,8 @@ export class ParsedBarcode implements BarcodeData {
         readonly checkDigit = -1
     ) {}
 
-    public getApplicationIdentifier(
-        identifierCode: string | AICode
-    ): string | number | Date | undefined {
-        return this.values.find(({ code }) => code === identifierCode)?.value;
+    public getApplicationIdentifier<T>(identifierCode: string | AICode): T | undefined {
+        return this.values.find(({ code }) => code === identifierCode)
+            ?.value as T | undefined;
     }
 }
